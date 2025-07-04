@@ -23,14 +23,13 @@ fieldnames = list(sensor_state.keys())
 csv_file = open('sensor_data.csv', 'w', newline='')
 csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 csv_writer.writeheader()
-
 def update_and_log(**kwargs):
     global sensor_state
     if not logging_enabled:
         return  # ไม่บันทึกข้อมูลหาก logging enabled = false
     
     sensor_state.update(kwargs)
-    sensor_state['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sensor_state['timestamp'] = datetime.now().strftime('%H:%M:%S.%f')
     csv_writer.writerow(sensor_state)
     csv_file.flush()
 
@@ -81,7 +80,6 @@ if __name__ == '__main__':
 
     ep_chassis.sub_status(freq=50, callback=sub_status_info_handler)
     ep_chassis.sub_imu(freq=10, callback=sub_imu_info_handler)
-    time.sleep(3)
     ep_chassis.sub_position(freq=1, callback=sub_position_handler)
     ep_chassis.sub_attitude(freq=5, callback=sub_attitude_info_handler) 
     ep_chassis.sub_esc(freq=20, callback=sub_esc_info_handler)
